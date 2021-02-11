@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:300i,400,700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<style>
+    body {
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+        font-family: "Nunito Sans";
+    }
+
+    .form-control {
+        line-height: 2;
+    }
+
+    .bg-custom {
+        background-color: #6C63FF;
+    }
+
+    .btn-custom {
+        background-color: #3e3d56;
+        color: #fff;
+    }
+
+    .btn-custom:hover {
+        background-color: #33313f;
+        color: #fff;
+    }
+
+    label {
+        color: #fff;
+    }
+
+    a,
+    a:hover {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    a,
+    a:hover {
+        text-decoration: none;
+    }
+
+    @media(max-width: 932px) {
+        .display-none {
+            display: none !important;
+        }
+    }
+</style>
+<body>
+<div class="row m-0 h-100">
+    <div class="col p-0 text-center d-flex justify-content-center align-items-center display-none">
+        <img src="https://cdn.iconscout.com/icon/free/png-512/mobile-smartphone-tablet-device-isometric-grid-3d-32794.png" class="w-100" alt="">
+    </div>
+    <div class="col p-0 bg-custom d-flex justify-content-center align-items-center flex-column w-100">
+        <form th:method="POST" th:action="@{/user/registration}" th:object="${userForm}" class="w-75">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username
+                    <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username eror</p>
+                </label>
+                <input type="text" th:field="*{username}" class="form-control" id="username" placeholder="Username" required="">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password eror</p>
+                </label>
+                <input type="text" th:field="*{password}" class="form-control" id="password" placeholder="Password" required="">
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-check">
+
+                    </div>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-custom btn-lg btn-block mt-3" value="Register Now">
+            <!--            <button type="submit" class="btn btn-custom btn-lg btn-block mt-3">Login Now</button>-->
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
