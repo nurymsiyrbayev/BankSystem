@@ -6,10 +6,7 @@ import kz.edu.nurym.services.BankCardService;
 import kz.edu.nurym.services.BankService;
 import kz.edu.nurym.services.BankServicesService;
 import kz.edu.nurym.services.UserService;
-import kz.edu.nurym.services.interfaces.IBankCardService;
-import kz.edu.nurym.services.interfaces.IBankService;
-import kz.edu.nurym.services.interfaces.IBankServicesService;
-import kz.edu.nurym.services.interfaces.IUserService;
+import kz.edu.nurym.services.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,21 +20,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/bank")
 public class BankController {
     private final IUserService userService;
     private final IBankServicesService bankServicesService;
     private final IBankCardService bankCardService;
+    private final IExchangeRateService exchangeRateService;
 
     @Autowired
-    public BankController(UserService userService, BankServicesService bankServicesService, BankCardService bankCardService) {
+    public BankController(IUserService userService, IBankServicesService bankServicesService, IBankCardService bankCardService, IExchangeRateService exchangeRateService) {
         this.userService = userService;
         this.bankServicesService = bankServicesService;
         this.bankCardService = bankCardService;
+        this.exchangeRateService = exchangeRateService;
     }
 
-
-    @GetMapping("/home")
+    @RequestMapping("/home")
     public String home( Model model) {
         String loginedUserUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         User loginedUser = userService.findByUsername(loginedUserUsername);
@@ -46,47 +43,24 @@ public class BankController {
         return "home";
     }
 
-    @GetMapping("/services/{id}")
-    public String getSingleProductPage(@PathVariable Long id, Model model) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(username);
-        model.addAttribute("service", bankServicesService.select(id));
-        model.addAttribute("userBankCards", bankCardService.findAllByUser(user));
-        model.addAttribute("user", user);
-        return "service";
-    }
 
-    public String service(Model model){
-        return "services";
-    }
 
-    @PostMapping(value = "/service/buy/{id}/{price}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String payService(@PathVariable("id") long id, @PathVariable("price") float price,Model model) {
-        Optional<BankCard> bankCard = bankCardService.select(id);
-        if (bankCard.isPresent()) {
-            bankCard.get().setKZTCurrency(bankCard.get().getKZTCurrency() - price);
-            if (bankCardService.update(bankCard.get())){
-                return "{\"response\": \"Pay success\"}";
-            }else {
-                return "{\"response\": \"Pay eror\"}";
-            }
-        }else
-            return "{\"bankCardEror\": \"BankCard Eror\"}";
-    }
-
-    @GetMapping("/convert")
+    @RequestMapping("/convert")
     public String convert(Model model){
+        String loginedUserUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User loginedUser = userService.findByUsername(loginedUserUsername);
+        model.addAttribute("userBankCards", bankCardService.findAllByUser(loginedUser));
+        model.addAttribute("exchangeRates", exchangeRateService.findAll());
         return "convert";
     }
 
-    @GetMapping("/transfer")
+    @RequestMapping("/transfer")
     public String transfer(Model model){
+        String loginedUserUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User loginedUser = userService.findByUsername(loginedUserUsername);
+        model.addAttribute("userBankCards", bankCardService.findAllByUser(loginedUser));
+        model.addAttribute("exchangeRates", exchangeRateService.findAll());
         return "transfer";
-    }
-
-    @GetMapping("/history")
-    public String history(Model model){
-        return "history";
     }
 
 }

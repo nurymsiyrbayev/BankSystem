@@ -15,18 +15,18 @@ public class BankCard implements Serializable {
     private long id;
     @Column(name = "number",unique = true)
     @Size(min = 12, max = 12)
-    private int number;
+    private long number;
     @Column(name = "expirationDate")
     private Date expirationDate;
     @Column(name = "secureNumber")
     @Size(min = 3, max = 3)
     private int secureNumber;
-    @Column(name = "KZTCurrency")
-    private float KZTCurrency;
-    @Column(name = "USDCurrency")
-    private float USACurrency;
-    @Column(name = "EURCurrency")
-    private float EURCurrency;
+    @Column(name = "KZTCurrency", precision=10, scale = 2)
+    private double KZTCurrency;
+    @Column(name = "USDCurrency", precision=10, scale = 2)
+    private double USDCurrency;
+    @Column(name = "EURCurrency", precision=10, scale = 2)
+    private double EURCurrency;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "bankId")
     private Bank bank;
@@ -35,6 +35,13 @@ public class BankCard implements Serializable {
     private User user;
 
 
+    public void setNumber(long number) {
+        this.number = number;
+    }
+
+    public long getNumber() {
+        return number;
+    }
 
     public long getBank_card_id() {
         return id;
@@ -50,12 +57,6 @@ public class BankCard implements Serializable {
         this.id = id;
     }
 
-    public int getNumber() {
-        return number;
-    }
-    public void setNumber(int number) {
-        this.number = number;
-    }
 
     public Date getExpirationDate() {
         return expirationDate;
@@ -71,24 +72,24 @@ public class BankCard implements Serializable {
         this.secureNumber = secureNumber;
     }
 
-    public float getKZTCurrency() {
+    public double getKZTCurrency() {
         return KZTCurrency;
     }
-    public void setKZTCurrency(float KZTCurrency) {
+    public void setKZTCurrency(double KZTCurrency) {
         this.KZTCurrency = KZTCurrency;
     }
 
-    public float getUSACurrency() {
-        return USACurrency;
+    public double getUSDCurrency() {
+        return USDCurrency;
     }
-    public void setUSACurrency(float USACurrency) {
-        this.USACurrency = USACurrency;
+    public void setUSDCurrency(double USDCurrency) {
+        this.USDCurrency = USDCurrency;
     }
 
-    public float getEURCurrency() {
+    public double getEURCurrency() {
         return EURCurrency;
     }
-    public void setEURCurrency(float EURCurrency) {
+    public void setEURCurrency(double EURCurrency) {
         this.EURCurrency = EURCurrency;
     }
 

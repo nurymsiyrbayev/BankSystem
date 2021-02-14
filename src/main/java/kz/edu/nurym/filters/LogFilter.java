@@ -6,6 +6,6 @@ import java.util.logging.LogRecord;
 public class LogFilter implements Filter {
     @Override
     public boolean isLoggable(LogRecord record) {
-        return !record.getSourceClassName().startsWith("kz.edu.nurym.repository.interfaces.ExchangeRateRepo.java");
+        return !record.getSourceClassName().startsWith("kz.edu.nurym.repository.interfaces.ExchangeRateRepo");
     }
 }

@@ -27,15 +27,20 @@ public class UserController {
         this.bankCardService = bankCardService;
     }
 
+    @PostMapping("change/password")
+    public String changePassword(@ModelAttribute("userForm") @Valid User userForm){
+        userService.update(userService.changePassword(userForm.getPassword()));
+        return "redirect:/user/profile";
+    }
+
+
     @GetMapping("/profile")
     public String getUser(Model model){
-        String loginedUserUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (loginedUserUsername == null){
-            return "login";
-        }
-        User loginedUser = userService.findByUsername(loginedUserUsername);
-        model.addAttribute("bankCards", bankCardService.findAllByUser(loginedUser));
-        model.addAttribute("user", loginedUser);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(username);
+        model.addAttribute("bankCards", bankCardService.findAllByUser(user));
+        model.addAttribute("user", user);
+        model.addAttribute("userForm", new User());
         return "profile";
     }
 
@@ -48,16 +53,13 @@ public class UserController {
 
     @PostMapping("/registration")
     public String registration(@ModelAttribute("userForm") @Valid User userForm, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "registration";
-        }
-        userService.insert(userForm);
-        return "redirect:/user/login";
+        if (bindingResult.hasErrors()) return "registration";
+        if (userService.insert(userForm)) return "redirect:/user/login";
+        else return "registration";
     }
 
     @GetMapping("/login")
     public String login() {
-        String loginedUserUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         return "login";
     }
 }

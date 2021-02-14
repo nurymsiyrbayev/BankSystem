@@ -59,7 +59,9 @@
         <img src="https://cdn.iconscout.com/icon/free/png-512/mobile-smartphone-tablet-device-isometric-grid-3d-32794.png" class="w-100" alt="">
     </div>
     <div class="col p-0 bg-custom d-flex justify-content-center align-items-center flex-column w-100">
+        <h1>Registration</h1>
         <form th:method="POST" th:action="@{/user/registration}" th:object="${userForm}" class="w-75">
+            <p th:if="${param.error}">Username already exists</p>
             <div class="mb-3">
                 <label for="username" class="form-label">Username
                     <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username eror</p>
@@ -70,20 +72,21 @@
                 <label for="password" class="form-label">Password
                     <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password eror</p>
                 </label>
-                <input type="text" th:field="*{password}" class="form-control" id="password" placeholder="Password" required="">
+                <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="Password" required="">
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-check">
-
+                        <a th:href="@{/user/login}">or Login</a>
                     </div>
                 </div>
             </div>
-            <input type="submit" class="btn btn-custom btn-lg btn-block mt-3" value="Register Now">
+            <input type="submit" class="btn btn-custom btn-lg btn-block mt-3 registration" value="Register Now">
             <!--            <button type="submit" class="btn btn-custom btn-lg btn-block mt-3">Login Now</button>-->
         </form>
     </div>
 </div>
+
 
 </body>
 </html>

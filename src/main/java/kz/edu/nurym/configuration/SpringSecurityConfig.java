@@ -14,27 +14,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    private UserDetailsService userService;
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-
-//    @Override
-//    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-//        auth.inMemoryAuthentication()
-//                .withUser("user").password(passwordEncoder().encode("userPass")).roles("USER")
-//                .and().withUser("admin").password(passwordEncoder().encode("adminPass")).roles("ADMIN");
-//    }
-
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/home", "/service", "/service/*", "/transfer", "/convert").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/home", "/service", "/service/*", "/transfer", "/convert").hasAuthority("read")
                 .antMatchers("/user/registration").permitAll()
-                .antMatchers("/bank").hasAnyRole("USER","ADMIN")
                 .antMatchers("/user/*").hasAuthority("read")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .and()
@@ -44,7 +30,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/user/profile", true).permitAll()
                 .and()
                 .logout().permitAll()
-                .logoutSuccessUrl("/");
+                .logoutSuccessUrl("/user/login")
+                .and()
+                .csrf().disable();
     }
 
     @Bean

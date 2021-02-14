@@ -5,8 +5,16 @@ import java.util.logging.FileHandler;
 
 public class Logger implements Runnable {
     private static FileHandler handler;
+    static {
+        try {
+            handler = new FileHandler("../src/main/resources/logs/", true);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
     private final java.util.logging.Logger log;
-    private String string;
+    private final String string;
 
     @Override
     public void run() {
@@ -22,14 +30,7 @@ public class Logger implements Runnable {
         this.string = string;
         this.log.setFilter(new LogFilter());
         this.log.addHandler(handler);
-
     }
 
-    static {
-        try {
-            handler = new FileHandler("/home/azatkali/JavaProjects/bank-system/src/main/webapp/WEB-INF/logger.log", true);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
-    }
+
 }

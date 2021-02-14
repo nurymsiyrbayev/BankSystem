@@ -11,6 +11,7 @@ import kz.edu.nurym.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -75,6 +76,14 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
+    public User changePassword(String password) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = findByUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+        return user;
+    }
+
+    @Override
     public boolean insert(User entity) {
         User userFromDB = userRepo.findByUsername(entity.getUsername());
         if (userFromDB != null) {
@@ -84,7 +93,6 @@ public class UserService implements IUserService, UserDetailsService {
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         userRepo.save(entity);
         if (userRepo.findByUsername(entity.getUsername()) == null) {
-            System.out.println("User Save done!");
             executorService.submit(new Logger(IUserRepo.class.getName(), "Insert was successfully. User -> " + entity));
             return true;
         }
@@ -94,6 +102,7 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public boolean update(User entity) {
         userRepo.saveAndFlush(entity);
+        executorService.submit(new Logger(IUserRepo.class.getName(), "Update was successfully. User -> " + entity));
         return true;
     }
 
@@ -103,7 +112,8 @@ public class UserService implements IUserService, UserDetailsService {
             return false;
         }
         userRepo.delete(entity);
-        return  false;
+        executorService.submit(new Logger(IUserRepo.class.getName(), "Remove was successfully. User -> " + entity));
+        return true;
     }
 
     @Override

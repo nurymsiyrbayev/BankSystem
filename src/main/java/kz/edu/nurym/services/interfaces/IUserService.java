@@ -17,4 +17,6 @@ public interface IUserService {
     User findByUsername(String username);
 
     List<User> getUserList();
+
+    User changePassword(String password);
 }

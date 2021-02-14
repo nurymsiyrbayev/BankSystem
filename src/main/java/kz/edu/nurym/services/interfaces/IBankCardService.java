@@ -16,7 +16,9 @@ public interface IBankCardService {
 
     Optional<BankCard> select(long id);
 
-    BankCard findByNumber(int number);
+    BankCard findByNumber(long number);
 
     Set<BankCard> findAllByUser(User user);
+
+    String convertMoney(BankCard bankCard, long fromCurrencyId, long toCurrencyId, double amount);
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://java.sun.com/jsf/html">
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -82,62 +82,77 @@
 </style>
 <body>
 <header th:insert="header :: header"/>
-<div>
-    <h1 th:text="'Lol '+ ${user}"/>
-</div>
-<main class="container">
 
+<div class="container">
+    <main>
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+            <h6 class="border-bottom pb-2 mb-0">Suggestions</h6>
+            <div class="d-flex text-muted pt-3">
+                <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32"
+                     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32"
+                     preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#007bff"></rect>
+                    <text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text>
+                </svg>
 
-    <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <h6 class="border-bottom pb-2 mb-0">Suggestions</h6>
-        <div class="d-flex text-muted pt-3">
-            <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32"
-                 xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32"
-                 preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
-                <rect width="100%" height="100%" fill="#007bff"></rect>
-                <text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text>
-            </svg>
-
-            <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                <div class="d-flex justify-content-between">
-                    <strong class="text-gray-dark" th:text="${user.getUsername())}"/>
-                    <a href="#">Follow</a>
+                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
+                    <div class="d-flex justify-content-between">
+                        <strong class="text-gray-dark" th:text="${user.getUsername()}"/>
+                        <a href="#">Follow</a>
+                    </div>
+                    <span class="d-block" th:text="${user.getRoles().getName()}"/>
                 </div>
-                <span class="d-block" th:text="${user.getRoles().getName()}"/>
+            </div>
+            <div class="d-flex text-muted pt-3">
+                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
+                    <form th:method="POST" th:object="${userForm}" th:action="@{/user/change/password}" class="w-100">
+                        <div class="d-flex justify-content-between">
+                            <div class="col-12">
+                                <label for="password" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">*~*</span>
+                                    <input th:field="*{password}" type="text" class="form-control" id="password"
+                                           placeholder=" New password" required="">
+                                    <input type="submit" value="Change">
+                                    <div class="invalid-feedback">
+                                        Your username is required.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <small class="d-block text-end mt-3">
-            <a href="#">All suggestions</a>
-        </small>
-    </div>
-    <div class="row mb-2">
-        <th:block th:each="bankCard : ${bankCards}">
-            <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                    <div class="col p-4 d-flex flex-column position-static">
-                        <strong class="d-inline-block mb-2 text-primary">Bank Card</strong>
-                        <h3 class="mb-0" th:text="${bankCard.getNumber}"/>
-                        <div class="mb-1 text-muted" th:text="${bankCard.getExpirationDate()}"/>
-                        <p class="card-text mb-auto" th:text="'KZT: ' + ${bankCard.getgetKZTCurrency()}"/>
-                        <p class="card-text mb-auto" th:text="'EUR: ' + ${bankCard.getgetEURCurrency()}"/>
-                        <p class="card-text mb-auto" th:text="'USD: ' + ${bankCard.getgetUSDCurrency()}"/>
-                        <a href="#" class="stretched-link">Continue reading</a>
-                    </div>
-                    <div class="col-auto d-none d-lg-block">
-                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
-                             role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice"
-                             focusable="false"><title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="#55595c"></rect>
-                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">Bank Card</text>
-                        </svg>
+        <div class="row mb-2">
+            <th:block th:each="bankCard : ${bankCards}">
+                <div class="col-md-6">
+                    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                        <div class="col p-4 d-flex flex-column position-static">
+                            <strong class="d-inline-block mb-2 text-primary">Bank Card</strong>
+                            <h3 class="mb-0" th:text="${bankCard.getNumber()}"/>
+                            <div class="mb-1 text-muted" th:text="${bankCard.getExpirationDate()}"/>
+                            <p class="card-text mb-auto" th:text="'KZT: ' + ${bankCard.getKZTCurrency()}"/>
+                            <p class="card-text mb-auto" th:text="'EUR: ' + ${bankCard.getEURCurrency()}"/>
+                            <p class="card-text mb-auto" th:text="'USD: ' + ${bankCard.getUSDCurrency()}"/>
+                        </div>
+                        <div class="col-auto d-none d-lg-block">
+                            <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
+                                 role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice"
+                                 focusable="false"><title>Placeholder</title>
+                                <rect width="100%" height="100%" fill="#55595c"></rect>
+                                <text x="50%" y="50%" fill="#eceeef" dy=".3em">Bank Card</text>
+                            </svg>
 
+                        </div>
                     </div>
                 </div>
-            </div>
-        </th:block>
+            </th:block>
 
-    </div>
-</main>
+        </div>
+    </main>
+</div>
 
 <footer th:insert="footer :: footer"></footer>
 

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Convert</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/cover/">
+</head>
+<body>
+<footer th:insert="header :: header"></footer>
+
+<div class="container">
+    <main>
+        <div class="py-5 text-center">
+            <h2>Convert</h2>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-5 col-lg-4 order-md-last">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Your Bank Cards</span>
+                    <span class="badge bg-secondary rounded-pill" th:text="${userBankCards.size()}"/>
+                </h4>
+                <ul class="list-group mb-3">
+                    <li th:each="bankCard : ${userBankCards}" class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0" th:text="${bankCard.getNumber()}"/>
+                            <small class="text-muted">............</small>
+                        </div>
+                        <div>
+                            <p class="text-muted" th:text="${bankCard.getKZTCurrency()} + 'Tg'"/>
+                            <p class="text-muted" th:text="${bankCard.getUSDCurrency()} + '$'"/>
+                            <p class="text-muted" th:text="${bankCard.getEURCurrency()} + '€'"/>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-7 col-lg-8">
+                <h4 class="mb-3">Building convert</h4>
+                <form class="needs-validation" novalidate="">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="bankCard" class="form-label">Bank Card</label>
+                            <select class="form-select bankCard" id="bankCard" required="">
+                                <option value="">Choose...</option>
+                                <option th:each="bankCard : ${userBankCards}" th:value="${bankCard.getId()}"
+                                        th:text="${bankCard.getNumber()}"/>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a Bank Card.
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="amount" class="form-label">Transfer amount</label>
+                            <input type="number" class="form-control amount" id="amount" placeholder="0" required="">
+                            <div class="invalid-feedback">
+                                Transfer amount required.
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <hr class="my-4">
+                    <h4 class="mb-3">Currency types</h4>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="currencyFrom" class="form-label">From</label>
+                            <select class="form-select currencyFrom" id="currencyFrom" required="">
+                                <option value="">Choose...</option>
+                                <option th:each="exchangeRate : ${exchangeRates}" th:value="${exchangeRate.getId()}" th:text="${exchangeRate.getCurrency()}"/>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please provide a Currency.
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="currencyTo" class="form-label">To</label>
+                            <select class="form-select currencyTo" id="currencyTo" required="">
+                                <option value="">Choose...</option>
+                                <option th:each="exchangeRate : ${exchangeRates}" th:value="${exchangeRate.getId()}" th:text="${exchangeRate.getCurrency()}"/>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please provide a Currency.
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <button class="w-100 btn btn-primary btn-lg convert" type="submit">Convert money</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<footer th:insert="footer :: footer"></footer>
+</body>
+</html>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.convert').click(function (event) {
+            event.preventDefault();
+            let amount = parseFloat($('.amount').val());
+            let bankCardId = parseInt($('.bankCard').val());
+            let fromCurrencyIndex = parseInt($('.currencyFrom').val());
+            let toCurrencyIndex = parseInt($('.currencyTo').val());
+            console.log(amount);
+            console.log(bankCardId);
+            $.ajax({
+                url: "http://localhost:8080/convert/" + bankCardId + "/" + fromCurrencyIndex  + "/" + toCurrencyIndex  + "/" + amount,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(jqXHR);
+                    alert(data["response"]);
+                },
+                error: function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(jqXHR);
+                    alert("Convert call Eror");
+                }
+            });
+        });
+    });
+</script>
